@@ -17,6 +17,8 @@ import lombok.Setter;
 @Setter
 public class ShowtimeDTO {
 
+    private String id;
+
     private Integer showtimeId;
 
     @NotNull

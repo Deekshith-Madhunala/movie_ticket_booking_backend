@@ -31,9 +31,11 @@ public class UserService {
     }
 
     public UserDTO get(final Integer userId) {
-        return userRepository.findById(userId)
-                .map(user -> mapToDTO(user, new UserDTO()))
-                .orElseThrow(NotFoundException::new);
+        User user = userRepository.findByUserId(userId);
+        if(user == null){
+            throw new NotFoundException();
+        }
+        return mapToDTO(user, new UserDTO());
     }
 
     public Integer create(final UserDTO userDTO) {
@@ -43,17 +45,20 @@ public class UserService {
     }
 
     public void update(final Integer userId, final UserDTO userDTO) {
-        final User user = userRepository.findById(userId)
-                .orElseThrow(NotFoundException::new);
+        final User user = userRepository.findByUserId(userId);
+        if(user == null){
+            throw new NotFoundException();
+        }
         mapToEntity(userDTO, user);
         userRepository.save(user);
     }
 
     public void delete(final Integer userId) {
-        userRepository.deleteById(userId);
+        userRepository.deleteByUserId(userId);
     }
 
     private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
+        userDTO.setId(user.getId());
         userDTO.setUserId(user.getUserId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
@@ -65,6 +70,7 @@ public class UserService {
     }
 
     private User mapToEntity(final UserDTO userDTO, final User user) {
+        user.setId(userDTO.getId());
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
@@ -76,8 +82,10 @@ public class UserService {
 
     public ReferencedWarning getReferencedWarning(final Integer userId) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final User user = userRepository.findById(userId)
-                .orElseThrow(NotFoundException::new);
+        final User user = userRepository.findByUserId(userId);
+        if(user == null){
+            throw new NotFoundException();
+        }
         final Booking userBooking = bookingRepository.findFirstByUser(user);
         if (userBooking != null) {
             referencedWarning.setKey("user.booking.user.referenced");

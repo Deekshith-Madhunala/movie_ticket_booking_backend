@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class BookingDTO {
 
+    private String id;
+
     private Integer bookingId;
 
     @Size(max = 255)

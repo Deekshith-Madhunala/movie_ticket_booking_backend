@@ -22,6 +22,8 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Movie {
 
     @Id
+    private String id;
+
     private Integer movieId;
 
     @NotNull

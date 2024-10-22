@@ -18,6 +18,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 public class User {
 
     @Id
+    private String id;
+
     private Integer userId;
 
     @NotNull

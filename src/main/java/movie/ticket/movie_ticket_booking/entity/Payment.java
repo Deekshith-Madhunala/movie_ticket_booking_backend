@@ -20,6 +20,8 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Payment {
 
     @Id
+    private String id;
+
     private Integer paymentId;
 
     @NotNull

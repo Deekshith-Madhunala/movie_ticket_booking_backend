@@ -32,9 +32,11 @@ public class TheaterService {
     }
 
     public TheaterDTO get(final Integer theaterId) {
-        return theaterRepository.findById(theaterId)
-                .map(theater -> mapToDTO(theater, new TheaterDTO()))
-                .orElseThrow(NotFoundException::new);
+        Theater theater = theaterRepository.findByTheaterId(theaterId);
+        if(theater == null){
+            throw new NotFoundException();
+        }
+        return mapToDTO(theater, new TheaterDTO());
     }
 
     public Integer create(final TheaterDTO theaterDTO) {
@@ -44,17 +46,20 @@ public class TheaterService {
     }
 
     public void update(final Integer theaterId, final TheaterDTO theaterDTO) {
-        final Theater theater = theaterRepository.findById(theaterId)
-                .orElseThrow(NotFoundException::new);
+        final Theater theater = theaterRepository.findByTheaterId(theaterId);
+        if(theater == null){
+            throw new NotFoundException();
+        }
         mapToEntity(theaterDTO, theater);
         theaterRepository.save(theater);
     }
 
     public void delete(final Integer theaterId) {
-        theaterRepository.deleteById(theaterId);
+        theaterRepository.deleteByTheaterId(theaterId);
     }
 
     private TheaterDTO mapToDTO(final Theater theater, final TheaterDTO theaterDTO) {
+        theaterDTO.setId(theater.getId());
         theaterDTO.setTheaterId(theater.getTheaterId());
         theaterDTO.setName(theater.getName());
         theaterDTO.setAddress(theater.getAddress());
@@ -63,6 +68,7 @@ public class TheaterService {
     }
 
     private Theater mapToEntity(final TheaterDTO theaterDTO, final Theater theater) {
+        theater.setId(theaterDTO.getId());
         theater.setName(theaterDTO.getName());
         theater.setAddress(theaterDTO.getAddress());
         theater.setTotalSeats(theaterDTO.getTotalSeats());
@@ -71,8 +77,10 @@ public class TheaterService {
 
     public ReferencedWarning getReferencedWarning(final Integer theaterId) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final Theater theater = theaterRepository.findById(theaterId)
-                .orElseThrow(NotFoundException::new);
+        final Theater theater = theaterRepository.findByTheaterId(theaterId);
+        if (theater == null){
+            throw new NotFoundException();
+        }
         final Showtime theaterShowtime = showtimeRepository.findFirstByTheater(theater);
         if (theaterShowtime != null) {
             referencedWarning.setKey("theater.showtime.theater.referenced");

@@ -17,6 +17,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 public class Theater {
 
     @Id
+    private String id;
+
     private Integer theaterId;
 
     @NotNull

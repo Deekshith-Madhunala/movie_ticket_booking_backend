@@ -23,6 +23,8 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Showtime {
 
     @Id
+    private String id;
+
     private Integer showtimeId;
 
     @NotNull

@@ -7,6 +7,7 @@ import movie.ticket.movie_ticket_booking.modelDTO.BookingDetailsDTO;
 import movie.ticket.movie_ticket_booking.service.BookingService;
 import movie.ticket.movie_ticket_booking.util.ReferencedException;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
+import org.bson.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,8 +65,12 @@ public class BookingController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<BookingDetailsDTO> getBookingsByUserId(@PathVariable Integer userId) {
-        return bookingService.getBookingDetailsByUserId(userId);
+    public ResponseEntity<List<Document>> getBookingDetailsByUserId(@PathVariable String userId) {
+        List<Document> bookings = bookingService.getBookingDetailsByUserId(userId);
+        if (bookings.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
 }

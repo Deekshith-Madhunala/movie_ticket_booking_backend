@@ -14,6 +14,8 @@ public class PrimarySequence {
     @Id
     private String id;
 
+    private String sequence_id;
+
     private long seq;
 
 }

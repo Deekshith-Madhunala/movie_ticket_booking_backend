@@ -15,6 +15,9 @@ import lombok.Setter;
 @Setter
 public class MovieDTO {
 
+
+    private String id;
+
     private Integer movieId;
 
     @NotNull

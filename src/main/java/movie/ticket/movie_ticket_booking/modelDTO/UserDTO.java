@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 public class UserDTO {
 
+    private String id;
+
     private Integer userId;
 
     @NotNull

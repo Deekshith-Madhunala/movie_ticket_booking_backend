@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 public class TheaterDTO {
 
+    private String id;
+
     private Integer theaterId;
 
     @NotNull

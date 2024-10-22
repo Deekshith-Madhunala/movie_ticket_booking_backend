@@ -22,6 +22,8 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Booking {
 
     @Id
+    private String id;
+
     private Integer bookingId;
 
     @Size(max = 255)
