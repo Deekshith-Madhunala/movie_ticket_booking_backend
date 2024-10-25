@@ -83,6 +83,8 @@ public class BookingService {
         bookingDTO.setBookingId(booking.getBookingId());
         bookingDTO.setPaymentStatus(booking.getPaymentStatus());
         bookingDTO.setBookingStatus(booking.getBookingStatus());
+        bookingDTO.setSeatType(booking.getSeatType());
+        bookingDTO.setSeatSelected(bookingDTO.getSeatSelected());
         bookingDTO.setTotalAmount(booking.getTotalAmount());
         bookingDTO.setCreatedAt(booking.getCreatedAt());
         bookingDTO.setCancelledAt(booking.getCancelledAt());
@@ -95,6 +97,8 @@ public class BookingService {
         booking.setBookingId(bookingDTO.getBookingId());
         booking.setPaymentStatus(bookingDTO.getPaymentStatus());
         booking.setBookingStatus(bookingDTO.getBookingStatus());
+        booking.setSeatType(bookingDTO.getSeatType());
+        booking.setSeatSelected(bookingDTO.getSeatSelected());
         booking.setTotalAmount(bookingDTO.getTotalAmount());
         booking.setCreatedAt(bookingDTO.getCreatedAt());
         booking.setCancelledAt(bookingDTO.getCancelledAt());

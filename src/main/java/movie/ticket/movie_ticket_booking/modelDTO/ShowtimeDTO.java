@@ -11,6 +11,9 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import movie.ticket.movie_ticket_booking.entity.Theater;
+import movie.ticket.movie_ticket_booking.entity.TimeSlot;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 
 @Getter
@@ -21,17 +24,12 @@ public class ShowtimeDTO {
 
     private Integer showtimeId;
 
-    @NotNull
-    private String showtimeTime;
+    private Integer timeslotId;
 
     @NotNull
     private Date showDate;
 
-    @NotNull
-    private List<String> seatSelected;
-
-    @NotNull
-    private String seatType;
+    private String availableSeats;
 
     @NotNull
     @Digits(integer = 12, fraction = 2)

@@ -1,11 +1,8 @@
 package movie.ticket.movie_ticket_booking.repository;
 
-import com.mongodb.client.MongoIterable;
 import movie.ticket.movie_ticket_booking.entity.Booking;
 import movie.ticket.movie_ticket_booking.entity.Showtime;
 import movie.ticket.movie_ticket_booking.entity.User;
-import movie.ticket.movie_ticket_booking.modelDTO.BookingDTO;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 

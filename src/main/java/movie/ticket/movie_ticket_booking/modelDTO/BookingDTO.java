@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +26,12 @@ public class BookingDTO {
 
     @Size(max = 255)
     private String bookingStatus;
+
+    @NotNull
+    private List<String> seatSelected;
+
+    @NotNull
+    private String seatType;
 
     @NotNull
     @Digits(integer = 12, fraction = 2)
