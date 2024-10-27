@@ -8,8 +8,10 @@ import movie.ticket.movie_ticket_booking.util.NotFoundException;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
+
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,8 +41,8 @@ public class ShowtimeService {
     }
 
     public ShowtimeDTO get(final Integer showtimeId) {
-        Showtime showtime =  showtimeRepository.findByShowtimeId(showtimeId);
-        if(showtime == null){
+        Showtime showtime = showtimeRepository.findByShowtimeId(showtimeId);
+        if (showtime == null) {
             throw new NotFoundException();
         }
         return mapToDTO(showtime, new ShowtimeDTO());
@@ -51,18 +53,25 @@ public class ShowtimeService {
                 showtimeDTO.getMovie(),
                 showtimeDTO.getTheater(),
                 showtimeDTO.getShowDate(),
-                showtimeDTO.getTimeslotIds(),
+                showtimeDTO.getTimeSlotIds(),
                 showtimeDTO.getPrice());
 
         final Showtime showtime = new Showtime();
         mapToEntity(showtimeDTO, showtime);
+        log.info("After Creating showtimes with values: movieId={}, theaterId={}, date={}, timeSlot={}, price={}",
+                showtime.getMovie(),
+                showtime.getTheater(),
+                showtime.getShowDate(),
+                showtime.getTimeslotIds(),
+                showtime.getPrice());
+
         return showtimeRepository.save(showtime).getShowtimeId();
     }
 
 
     public void update(final Integer showtimeId, final ShowtimeDTO showtimeDTO) {
         final Showtime showtime = showtimeRepository.findByShowtimeId(showtimeId);
-        if(showtime == null){
+        if (showtime == null) {
             throw new NotFoundException();
         }
         mapToEntity(showtimeDTO, showtime);
@@ -78,61 +87,51 @@ public class ShowtimeService {
         showtimeDTO.setShowtimeId(showtime.getShowtimeId());
         showtimeDTO.setShowDate(showtime.getShowDate());
         showtimeDTO.setPrice(showtime.getPrice());
-        showtimeDTO.setMovie(showtime.getMovie() != null ? showtime.getMovie().getMovieId() : null);
-        showtimeDTO.setTheater(showtime.getTheater() != null ? showtime.getTheater().getTheaterId() : null);
-        if (showtime.getTimeslotIds() != null) {
-            List<Integer> timeslotIds = new ArrayList<>();
-            for (TimeSlot timeSlot : showtime.getTimeslotIds()) {
-                if (timeSlot != null) {
-                    timeslotIds.add(timeSlot.getTimeSlotId());
-                }
-            }
-            showtimeDTO.setTimeslotIds(timeslotIds);
-        } else {
-            showtimeDTO.setTimeslotIds(null);
-        }
+        showtimeDTO.setMovie(showtime.getMovie().getMovieId());
+        showtimeDTO.setTheater(showtime.getTheater().getTheaterId());
+        showtimeDTO.setAvailableSeats(showtime.getAvailableSeats());
+
+        // Map the TimeSlot objects to their IDs
+        List<Integer> timeSlotIds = showtime.getTimeslotIds().stream()
+                .map(TimeSlot::getTimeSlotId) // Assuming TimeSlot has a getTimeSlotId() method
+                .collect(Collectors.toList());
+        showtimeDTO.setTimeSlotIds(timeSlotIds); // Set the list of IDs in the DTO
+
         return showtimeDTO;
     }
+
 
     private Showtime mapToEntity(final ShowtimeDTO showtimeDTO, final Showtime showtime) {
         showtime.setId(showtimeDTO.getId());
         showtime.setShowDate(showtimeDTO.getShowDate());
         showtime.setPrice(showtimeDTO.getPrice());
-        log.info("Setting movieId {}", showtimeDTO.getMovie());
-        final Movie movie = showtimeDTO.getMovie() == null ? null : movieRepository.findByMovieId(showtimeDTO.getMovie());
-        if(movie == null){
-            log.info("movie is null");
+        showtime.setAvailableSeats(showtimeDTO.getAvailableSeats());
+
+        // Fetch Movie and Theater
+        final Movie movie = movieRepository.findByMovieId(showtimeDTO.getMovie());
+        if (movie == null) {
             throw new NotFoundException();
         }
         showtime.setMovie(movie);
-        List<TimeSlot> timeSlots = new ArrayList<>();
-        if (showtimeDTO.getTimeslotIds() == null || showtimeDTO.getTimeslotIds().isEmpty()) {
-            log.info("timeSlots list is empty");
-            throw new NotFoundException();
-        }
-        for (Integer timeslotId : showtimeDTO.getTimeslotIds()) {
-            TimeSlot timeSlot = timeSlotRepository.findByTimeSlotId(timeslotId);
-            if (timeSlot == null) {
-                log.info("timeSlot with id {} is null", timeslotId);
-                throw new NotFoundException();
-            }
 
-            timeSlots.add(timeSlot);
-        }
-        showtime.setTimeslotIds(timeSlots);
-        final Theater theater = showtimeDTO.getTheater() == null ? null : theaterRepository.findByTheaterId(showtimeDTO.getTheater());
+        final Theater theater = theaterRepository.findByTheaterId(showtimeDTO.getTheater());
         if (theater == null) {
-            log.info("theater is null");
             throw new NotFoundException();
         }
         showtime.setTheater(theater);
+
+        // Fetch TimeSlot objects using the IDs and set them in the Showtime entity
+        List<TimeSlot> timeSlots = timeSlotRepository.findAllByTimeSlotIdIn(showtimeDTO.getTimeSlotIds());
+        log.info("Fetched {} TimeSlot(s) for showtime of {}", timeSlots.size(), showtimeDTO.getTimeSlotIds());
+        showtime.setTimeslotIds(timeSlots);  // Set the fetched TimeSlots
+
         return showtime;
     }
 
     public ReferencedWarning getReferencedWarning(final Integer showtimeId) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Showtime showtime = showtimeRepository.findByShowtimeId(showtimeId);
-        if(showtime == null){
+        if (showtime == null) {
             throw new NotFoundException();
         }
         final Booking showtimeBooking = bookingRepository.findFirstByShowtime(showtime);
@@ -144,4 +143,16 @@ public class ShowtimeService {
         return null;
     }
 
+    public List<ShowtimeDTO> getShowtimeByDate(Date showDate) {
+        log.info("Fetching showtimes for date: {}", showDate);
+        final List<Showtime> showtimes = showtimeRepository.findAllByShowDate(showDate);
+        if (showtimes == null) {
+            log.info("No showtimes found for date: {}", showDate);
+            throw new NotFoundException();
+        }
+        log.info("Found {} showtimes for date: {}", showtimes.size(), showDate);
+        return showtimes.stream()
+                .map(showtime -> mapToDTO(showtime, new ShowtimeDTO()))
+                .toList();
+    }
 }

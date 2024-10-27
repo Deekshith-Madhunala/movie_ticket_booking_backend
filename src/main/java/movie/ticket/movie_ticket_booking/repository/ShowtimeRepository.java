@@ -6,6 +6,9 @@ import movie.ticket.movie_ticket_booking.entity.Theater;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Date;
+import java.util.List;
+
 
 public interface ShowtimeRepository extends MongoRepository<Showtime, ObjectId> {
 
@@ -16,4 +19,6 @@ public interface ShowtimeRepository extends MongoRepository<Showtime, ObjectId> 
     Showtime findByShowtimeId(Integer showtimeId);
 
     void deleteByShowtimeId(Integer showtimeId);
+
+    List<Showtime> findAllByShowDate(Date showDate);
 }

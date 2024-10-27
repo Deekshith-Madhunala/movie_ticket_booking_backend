@@ -2,24 +2,23 @@ package movie.ticket.movie_ticket_booking.controller;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+
+import java.util.Date;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import movie.ticket.movie_ticket_booking.modelDTO.ShowtimeDTO;
 import movie.ticket.movie_ticket_booking.service.ShowtimeService;
 import movie.ticket.movie_ticket_booking.util.ReferencedException;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/showtimes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ShowtimeController {
@@ -45,6 +44,13 @@ public class ShowtimeController {
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Integer> createShowtime(
             @RequestBody @Valid final ShowtimeDTO showtimeDTO) {
+        log.info("Creating showtime with values: {}", showtimeDTO);
+        log.info("Creating showtimes with values: movieId={}, theaterId={}, date={}, timeSlotIds={}, price={}",
+                showtimeDTO.getMovie(),
+                showtimeDTO.getTheater(),
+                showtimeDTO.getShowDate(),
+                showtimeDTO.getTimeSlotIds(),
+                showtimeDTO.getPrice());
         final Integer createdShowtimeId = showtimeService.create(showtimeDTO);
         return new ResponseEntity<>(createdShowtimeId, HttpStatus.CREATED);
     }
@@ -68,5 +74,12 @@ public class ShowtimeController {
         showtimeService.delete(showtimeId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/date/showtimes")
+    public List<ShowtimeDTO> getShowtimeByDate(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date showDate) {
+        return showtimeService.getShowtimeByDate(showDate);
+    }
+
 
 }

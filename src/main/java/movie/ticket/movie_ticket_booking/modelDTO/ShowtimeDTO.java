@@ -5,15 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import movie.ticket.movie_ticket_booking.entity.Theater;
-import movie.ticket.movie_ticket_booking.entity.TimeSlot;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 
 @Getter
@@ -25,7 +21,7 @@ public class ShowtimeDTO {
     private Integer showtimeId;
 
     @NotNull
-    private List<Integer> timeslotIds;
+    private List<Integer> timeSlotIds;
 
     @NotNull
     private Date showDate;

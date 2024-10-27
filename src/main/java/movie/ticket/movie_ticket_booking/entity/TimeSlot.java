@@ -21,4 +21,12 @@ public class TimeSlot {
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime timeSlot;
+
+    public TimeSlot(Integer timeSlotId) {
+        this.timeSlotId = timeSlotId;
+    }
+
+    public TimeSlot() {
+
+    }
 }
