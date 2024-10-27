@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import movie.ticket.movie_ticket_booking.entity.TimeSlot;
 import movie.ticket.movie_ticket_booking.modelDTO.ShowtimeDTO;
 import movie.ticket.movie_ticket_booking.service.ShowtimeService;
 import movie.ticket.movie_ticket_booking.util.ReferencedException;
@@ -79,6 +80,12 @@ public class ShowtimeController {
     public List<ShowtimeDTO> getShowtimeByDate(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date showDate) {
         return showtimeService.getShowtimeByDate(showDate);
+    }
+
+    @GetMapping("/{showtimeId}/timeSlots")
+    public ResponseEntity<List<TimeSlot>> getTimeSlotsByShowId(@PathVariable Integer showtimeId) {
+        List<TimeSlot> timeSlots = showtimeService.getTimeSlotsByShowId(showtimeId);
+        return ResponseEntity.ok(timeSlots);
     }
 
 

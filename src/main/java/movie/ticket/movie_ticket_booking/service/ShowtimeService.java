@@ -155,4 +155,12 @@ public class ShowtimeService {
                 .map(showtime -> mapToDTO(showtime, new ShowtimeDTO()))
                 .toList();
     }
+
+    public List<TimeSlot> getTimeSlotsByShowId(Integer showtimeId) {
+        Showtime showtime = showtimeRepository.findByShowtimeId(showtimeId);
+        if (showtime == null) {
+            throw new NotFoundException("Showtime not found");
+        }
+        return showtime.getTimeslotIds();
+    }
 }
