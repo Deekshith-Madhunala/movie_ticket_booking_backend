@@ -24,7 +24,8 @@ public class ShowtimeDTO {
 
     private Integer showtimeId;
 
-    private Integer timeslotId;
+    @NotNull
+    private List<Integer> timeslotIds;
 
     @NotNull
     private Date showDate;

@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
@@ -45,7 +46,7 @@ public class Showtime {
     private Theater theater;
 
     @DocumentReference(lazy = true)
-    private TimeSlot timeSlot;
+    private List<TimeSlot> timeslotIds;
 
     @DocumentReference(lazy = true, lookup = "{ 'showtime' : ?#{#self._id} }")
     @ReadOnlyProperty
