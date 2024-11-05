@@ -20,5 +20,7 @@ public interface ShowtimeRepository extends MongoRepository<Showtime, ObjectId> 
 
     void deleteByShowtimeId(Integer showtimeId);
 
-    List<Showtime> findAllByShowDate(Date showDate);
+//    List<Showtime> findAllByShowDate(Date showDate);
+
+    List<Showtime> findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(Date showDate, Date showDate1);
 }

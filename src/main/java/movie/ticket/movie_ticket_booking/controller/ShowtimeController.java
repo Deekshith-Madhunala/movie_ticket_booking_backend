@@ -46,10 +46,11 @@ public class ShowtimeController {
     public ResponseEntity<Integer> createShowtime(
             @RequestBody @Valid final ShowtimeDTO showtimeDTO) {
         log.info("Creating showtime with values: {}", showtimeDTO);
-        log.info("Creating showtimes with values: movieId={}, theaterId={}, date={}, timeSlotIds={}, price={}",
+        log.info("Creating showtimes with values: movieId={}, theaterId={}, date={}, date={}, timeSlotIds={}, price={}",
                 showtimeDTO.getMovie(),
                 showtimeDTO.getTheater(),
-                showtimeDTO.getShowDate(),
+                showtimeDTO.getStartDate(),
+                showtimeDTO.getEndDate(),
                 showtimeDTO.getTimeSlotIds(),
                 showtimeDTO.getPrice());
         final Integer createdShowtimeId = showtimeService.create(showtimeDTO);

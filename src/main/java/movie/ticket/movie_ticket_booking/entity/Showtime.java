@@ -28,7 +28,10 @@ public class Showtime {
     private Integer showtimeId;
 
     @NotNull
-    private Date showDate;
+    private Date startDate;
+
+    @NotNull
+    private Date endDate;
 
     @NotNull
     @Digits(integer = 12, fraction = 2)

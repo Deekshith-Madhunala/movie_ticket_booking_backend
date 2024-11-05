@@ -24,7 +24,10 @@ public class ShowtimeDTO {
     private List<Integer> timeSlotIds;
 
     @NotNull
-    private Date showDate;
+    private Date startDate;
+
+    @NotNull
+    private Date endDate;
 
     private String availableSeats;
 

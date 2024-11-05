@@ -49,19 +49,21 @@ public class ShowtimeService {
     }
 
     public Integer create(final ShowtimeDTO showtimeDTO) {
-        log.info("Creating showtimes with values: movieId={}, theaterId={}, date={}, timeSlot={}, price={}",
+        log.info("Creating showtimes with values: movieId={}, theaterId={}, startDate={}, endDate={}, timeSlot={}, price={}",
                 showtimeDTO.getMovie(),
                 showtimeDTO.getTheater(),
-                showtimeDTO.getShowDate(),
+                showtimeDTO.getStartDate(),
+                showtimeDTO.getEndDate(),
                 showtimeDTO.getTimeSlotIds(),
                 showtimeDTO.getPrice());
 
         final Showtime showtime = new Showtime();
         mapToEntity(showtimeDTO, showtime);
-        log.info("After Creating showtimes with values: movieId={}, theaterId={}, date={}, timeSlot={}, price={}",
+        log.info("After Creating showtimes with values: movieId={}, theaterId={}, startDate={}, , endDate={}, timeSlot={}, price={}",
                 showtime.getMovie(),
                 showtime.getTheater(),
-                showtime.getShowDate(),
+                showtime.getStartDate(),
+                showtime.getEndDate(),
                 showtime.getTimeslotIds(),
                 showtime.getPrice());
 
@@ -85,7 +87,8 @@ public class ShowtimeService {
     private ShowtimeDTO mapToDTO(final Showtime showtime, final ShowtimeDTO showtimeDTO) {
         showtimeDTO.setId(showtime.getId());
         showtimeDTO.setShowtimeId(showtime.getShowtimeId());
-        showtimeDTO.setShowDate(showtime.getShowDate());
+        showtimeDTO.setStartDate(showtime.getStartDate());
+        showtimeDTO.setEndDate(showtime.getEndDate());
         showtimeDTO.setPrice(showtime.getPrice());
         showtimeDTO.setMovie(showtime.getMovie().getMovieId());
         showtimeDTO.setTheater(showtime.getTheater().getTheaterId());
@@ -103,7 +106,8 @@ public class ShowtimeService {
 
     private Showtime mapToEntity(final ShowtimeDTO showtimeDTO, final Showtime showtime) {
         showtime.setId(showtimeDTO.getId());
-        showtime.setShowDate(showtimeDTO.getShowDate());
+        showtime.setStartDate(showtimeDTO.getStartDate());
+        showtime.setEndDate(showtimeDTO.getEndDate());
         showtime.setPrice(showtimeDTO.getPrice());
         showtime.setAvailableSeats(showtimeDTO.getAvailableSeats());
 
@@ -145,15 +149,17 @@ public class ShowtimeService {
 
     public List<ShowtimeDTO> getShowtimeByDate(Date showDate) {
         log.info("Fetching showtimes for date: {}", showDate);
-        final List<Showtime> showtimes = showtimeRepository.findAllByShowDate(showDate);
-        if (showtimes == null) {
+        List<Showtime> showtimes = showtimeRepository.findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(showDate, showDate);
+
+        if (showtimes.isEmpty()) {
             log.info("No showtimes found for date: {}", showDate);
-            throw new NotFoundException();
+            throw new NotFoundException("No showtimes available for the given date.");
         }
+
         log.info("Found {} showtimes for date: {}", showtimes.size(), showDate);
         return showtimes.stream()
                 .map(showtime -> mapToDTO(showtime, new ShowtimeDTO()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<TimeSlot> getTimeSlotsByShowId(Integer showtimeId) {
