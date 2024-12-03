@@ -88,6 +88,7 @@ public class BookingService {
         bookingDTO.setTotalAmount(booking.getTotalAmount());
         bookingDTO.setCreatedAt(booking.getCreatedAt());
         bookingDTO.setCancelledAt(booking.getCancelledAt());
+        bookingDTO.setBookingDateAndTime(booking.getBookingDateAndTime());
         bookingDTO.setUser(booking.getUser() == null ? null : booking.getUser().getUserId());
         bookingDTO.setShowtime(booking.getShowtime() == null ? null : booking.getShowtime().getShowtimeId());
         return bookingDTO;
@@ -102,6 +103,7 @@ public class BookingService {
         booking.setTotalAmount(bookingDTO.getTotalAmount());
         booking.setCreatedAt(bookingDTO.getCreatedAt());
         booking.setCancelledAt(bookingDTO.getCancelledAt());
+        booking.setBookingDateAndTime(bookingDTO.getBookingDateAndTime());
         final User user = bookingDTO.getUser() == null ? null : userRepository.findByUserId(bookingDTO.getUser());
         if (user == null) {
             throw new NotFoundException();

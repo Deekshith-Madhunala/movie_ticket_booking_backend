@@ -60,4 +60,7 @@ public class Booking {
     @ReadOnlyProperty
     private Set<Payment> bookingPayments;
 
+    private OffsetDateTime bookingDateAndTime;
+
+
 }

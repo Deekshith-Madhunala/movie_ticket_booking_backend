@@ -47,4 +47,6 @@ public class BookingDTO {
 
     private Integer showtime;
 
+    private OffsetDateTime bookingDateAndTime;
+
 }
