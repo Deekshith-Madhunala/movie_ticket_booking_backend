@@ -3,9 +3,11 @@ package movie.ticket.movie_ticket_booking.service;
 import java.util.List;
 import movie.ticket.movie_ticket_booking.entity.Showtime;
 import movie.ticket.movie_ticket_booking.entity.Theater;
+import movie.ticket.movie_ticket_booking.entity.User;
 import movie.ticket.movie_ticket_booking.modelDTO.TheaterDTO;
 import movie.ticket.movie_ticket_booking.repository.ShowtimeRepository;
 import movie.ticket.movie_ticket_booking.repository.TheaterRepository;
+import movie.ticket.movie_ticket_booking.repository.UserRepository;
 import movie.ticket.movie_ticket_booking.util.NotFoundException;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
 import org.springframework.data.domain.Sort;
@@ -17,11 +19,14 @@ public class TheaterService {
 
     private final TheaterRepository theaterRepository;
     private final ShowtimeRepository showtimeRepository;
+    private final UserRepository userRepository;
 
     public TheaterService(final TheaterRepository theaterRepository,
-            final ShowtimeRepository showtimeRepository) {
+                          final ShowtimeRepository showtimeRepository,
+                          final UserRepository userRepository) {
         this.theaterRepository = theaterRepository;
         this.showtimeRepository = showtimeRepository;
+        this.userRepository = userRepository;
     }
 
     public List<TheaterDTO> findAll() {
@@ -64,6 +69,7 @@ public class TheaterService {
         theaterDTO.setName(theater.getName());
         theaterDTO.setAddress(theater.getAddress());
         theaterDTO.setTotalSeats(theater.getTotalSeats());
+        theaterDTO.setManager(theater.getManager().getUserId());
         return theaterDTO;
     }
 
@@ -72,6 +78,11 @@ public class TheaterService {
         theater.setName(theaterDTO.getName());
         theater.setAddress(theaterDTO.getAddress());
         theater.setTotalSeats(theaterDTO.getTotalSeats());
+        final User manager = theaterDTO.getManager() == null ? null : userRepository.findByUserId(theaterDTO.getManager());
+        if (manager == null) {
+            throw new NotFoundException();
+        }
+        theater.setManager(manager);
         return theater;
     }
 

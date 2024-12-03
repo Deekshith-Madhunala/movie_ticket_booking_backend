@@ -36,4 +36,8 @@ public class Theater {
     @ReadOnlyProperty
     private Set<Showtime> theaterShowtimes;
 
+    @DocumentReference(lazy = true)
+    private User manager;
+
+
 }

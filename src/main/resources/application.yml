@@ -1,7 +1,8 @@
 spring:
   data:
     mongodb:
-      uri: "mongodb://localhost:27017/MovieTicketBooking"
+#      uri: "mongodb://localhost:27017/MovieTicketBooking"
+      uri: "mongodb+srv://mongo:admin@database.jkjol.mongodb.net/MovieTicketBooking?retryWrites=true&w=majority&appName=MovieTicketBooking"
       auto-index-creation: true
 error:
   handling:

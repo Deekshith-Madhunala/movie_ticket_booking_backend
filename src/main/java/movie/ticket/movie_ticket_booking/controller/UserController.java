@@ -3,6 +3,8 @@ package movie.ticket.movie_ticket_booking.controller;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+
+import movie.ticket.movie_ticket_booking.entity.User;
 import movie.ticket.movie_ticket_booking.modelDTO.UserDTO;
 import movie.ticket.movie_ticket_booking.service.UserService;
 import movie.ticket.movie_ticket_booking.util.ReferencedException;
@@ -10,14 +12,7 @@ import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -63,6 +58,11 @@ public class UserController {
         }
         userService.delete(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> loginUser(@RequestParam(name = "email") final String email, @RequestParam(name = "password") final String password){
+        return ResponseEntity.ok(userService.findByEmailAndPassword(email, password));
     }
 
 }

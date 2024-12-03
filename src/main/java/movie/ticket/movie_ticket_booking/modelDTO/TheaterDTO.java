@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import movie.ticket.movie_ticket_booking.entity.User;
 
 
 @Getter
@@ -25,4 +26,5 @@ public class TheaterDTO {
     @NotNull
     private Integer totalSeats;
 
+    private Integer manager;
 }

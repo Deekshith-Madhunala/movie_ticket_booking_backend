@@ -8,6 +8,7 @@ import movie.ticket.movie_ticket_booking.repository.BookingRepository;
 import movie.ticket.movie_ticket_booking.repository.UserRepository;
 import movie.ticket.movie_ticket_booking.util.NotFoundException;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -95,4 +96,11 @@ public class UserService {
         return null;
     }
 
+    public UserDTO findByEmailAndPassword(String email, String password) {
+        final User user = userRepository.findByEmailAndPassword(email, password);
+        if(user == null){
+            throw new NotFoundException("User not found");
+        }
+        return mapToDTO(user, new UserDTO());
+    }
 }
