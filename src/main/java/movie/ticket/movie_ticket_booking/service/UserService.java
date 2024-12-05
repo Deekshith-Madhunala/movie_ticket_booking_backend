@@ -7,6 +7,7 @@ import movie.ticket.movie_ticket_booking.modelDTO.UserDTO;
 import movie.ticket.movie_ticket_booking.repository.BookingRepository;
 import movie.ticket.movie_ticket_booking.repository.UserRepository;
 import movie.ticket.movie_ticket_booking.util.NotFoundException;
+import movie.ticket.movie_ticket_booking.util.PasswordEncryptionUtil;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,12 @@ public class UserService {
 
     public User create(final UserDTO userDTO) {
         final User user = new User();
-        mapToEntity(userDTO, user); // Map fields from DTO to entity
-        return userRepository.save(user); // Save and return the full User object
+        mapToEntity(userDTO, user);
+        String encryptedPassword = PasswordEncryptionUtil.encryptPassword(userDTO.getPassword());
+        user.setPassword(encryptedPassword);
+        return userRepository.save(user);
     }
+
 
     public void update(final Integer userId, final UserDTO userDTO) {
         final User user = userRepository.findByUserId(userId);
@@ -105,10 +109,14 @@ public class UserService {
     }
 
     public UserDTO findByEmailAndPassword(String email, String password) {
-        final User user = userRepository.findByEmailAndPassword(email, password);
-        if(user == null){
+        final User user = userRepository.findByEmail(email); // Find user by email
+        if (user == null) {
             throw new NotFoundException("User not found");
+        }
+        if (!PasswordEncryptionUtil.matchPassword(password, user.getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
         }
         return mapToDTO(user, new UserDTO());
     }
+
 }
