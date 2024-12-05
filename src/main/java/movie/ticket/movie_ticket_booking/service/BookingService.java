@@ -164,4 +164,13 @@ public class BookingService {
         // Execute aggregation
         return mongoTemplate.aggregate(aggregation, "booking", Document.class).getMappedResults();
     }
+
+    public void updateBookingStatus(Integer bookingId) {
+        Booking booking = bookingRepository.findByBookingId(bookingId);
+        if (booking == null) {
+            throw new NotFoundException();
+        }
+        booking.setBookingStatus("CANCELLED");
+        bookingRepository.save(booking);
+    }
 }

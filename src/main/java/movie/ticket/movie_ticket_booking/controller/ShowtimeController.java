@@ -45,16 +45,20 @@ public class ShowtimeController {
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Integer> createShowtime(
             @RequestBody @Valid final ShowtimeDTO showtimeDTO) {
-        log.info("Creating showtime with values: {}", showtimeDTO);
-        log.info("Creating showtimes with values: movieId={}, theaterId={}, date={}, date={}, timeSlotIds={}, price={}",
+        log.info("Creating showtime with values: movieId={}, theaterId={}, startDate={}, endDate={}, price={}",
                 showtimeDTO.getMovie(),
                 showtimeDTO.getTheater(),
                 showtimeDTO.getStartDate(),
                 showtimeDTO.getEndDate(),
-                showtimeDTO.getTimeSlotIds(),
                 showtimeDTO.getPrice());
-        final Integer createdShowtimeId = showtimeService.create(showtimeDTO);
-        return new ResponseEntity<>(createdShowtimeId, HttpStatus.CREATED);
+
+        try {
+            final Integer createdShowtimeId = showtimeService.create(showtimeDTO);
+            return new ResponseEntity<>(createdShowtimeId, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.warn("Duplicate showtime detected: {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT); // 409 Conflict
+        }
     }
 
     @PutMapping("/{showtimeId}")
@@ -88,6 +92,4 @@ public class ShowtimeController {
         List<TimeSlot> timeSlots = showtimeService.getTimeSlotsByShowId(showtimeId);
         return ResponseEntity.ok(timeSlots);
     }
-
-
 }

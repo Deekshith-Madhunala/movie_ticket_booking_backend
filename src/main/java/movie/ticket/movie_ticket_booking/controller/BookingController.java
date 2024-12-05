@@ -52,6 +52,13 @@ public class BookingController {
         return ResponseEntity.ok(bookingId);
     }
 
+    @PostMapping("/status/{bookingId}")
+    public ResponseEntity<Integer> updateBookingStatus(
+            @PathVariable(name = "bookingId") final Integer bookingId) {
+        bookingService.updateBookingStatus(bookingId);
+        return ResponseEntity.ok(bookingId);
+    }
+
     @DeleteMapping("/{bookingId}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteBooking(

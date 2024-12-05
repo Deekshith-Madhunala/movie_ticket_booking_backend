@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ShowtimeRepository extends MongoRepository<Showtime, ObjectId> {
@@ -19,8 +20,6 @@ public interface ShowtimeRepository extends MongoRepository<Showtime, ObjectId> 
     Showtime findByShowtimeId(Integer showtimeId);
 
     void deleteByShowtimeId(Integer showtimeId);
-
-//    List<Showtime> findAllByShowDate(Date showDate);
 
     List<Showtime> findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(Date showDate, Date showDate1);
 }

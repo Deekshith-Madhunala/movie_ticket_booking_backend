@@ -39,10 +39,10 @@ public class UserService {
         return mapToDTO(user, new UserDTO());
     }
 
-    public Integer create(final UserDTO userDTO) {
+    public User create(final UserDTO userDTO) {
         final User user = new User();
-        mapToEntity(userDTO, user);
-        return userRepository.save(user).getUserId();
+        mapToEntity(userDTO, user); // Map fields from DTO to entity
+        return userRepository.save(user); // Save and return the full User object
     }
 
     public void update(final Integer userId, final UserDTO userDTO) {
@@ -61,7 +61,11 @@ public class UserService {
     private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
         userDTO.setId(user.getId());
         userDTO.setUserId(user.getUserId());
-        userDTO.setName(user.getName());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setCity(user.getCity());
+        userDTO.setZipCode(user.getZipCode());
+        userDTO.setDateOfBirth(user.getDateOfBirth());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
         userDTO.setRole(user.getRole());
@@ -72,7 +76,11 @@ public class UserService {
 
     private User mapToEntity(final UserDTO userDTO, final User user) {
         user.setId(userDTO.getId());
-        user.setName(userDTO.getName());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setCity(userDTO.getCity());
+        user.setZipCode(userDTO.getZipCode());
+        user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setRole(userDTO.getRole());

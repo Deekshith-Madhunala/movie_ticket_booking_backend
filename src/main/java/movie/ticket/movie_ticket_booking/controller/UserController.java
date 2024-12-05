@@ -37,10 +37,11 @@ public class UserController {
 
     @PostMapping
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Integer> createUser(@RequestBody @Valid final UserDTO userDTO) {
-        final Integer createdUserId = userService.create(userDTO);
-        return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@RequestBody @Valid final UserDTO userDTO) {
+        final User createdUser = userService.create(userDTO);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{userId}")
     public ResponseEntity<Integer> updateUser(@PathVariable(name = "userId") final Integer userId,

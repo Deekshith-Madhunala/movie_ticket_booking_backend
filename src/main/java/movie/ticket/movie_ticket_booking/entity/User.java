@@ -24,7 +24,23 @@ public class User {
 
     @NotNull
     @Size(max = 100)
-    private String name;
+    private String firstName;
+
+    @NotNull
+    @Size(max = 255)
+    private String city;
+
+    @NotNull
+    @Size(max = 255)
+    private String zipCode;
+
+    @NotNull
+    @Size(max = 255)
+    private String dateOfBirth;
+
+    @NotNull
+    @Size(max = 100)
+    private String lastName;
 
     @NotNull
     @Size(max = 100)

@@ -1,16 +1,20 @@
 package movie.ticket.movie_ticket_booking.service;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import movie.ticket.movie_ticket_booking.entity.*;
 import movie.ticket.movie_ticket_booking.modelDTO.ShowtimeDTO;
 import movie.ticket.movie_ticket_booking.repository.*;
+import movie.ticket.movie_ticket_booking.util.DuplicateShowtimeException;
 import movie.ticket.movie_ticket_booking.util.NotFoundException;
+import movie.ticket.movie_ticket_booking.util.ReferencedException;
 import movie.ticket.movie_ticket_booking.util.ReferencedWarning;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,22 +53,60 @@ public class ShowtimeService {
     }
 
     public Integer create(final ShowtimeDTO showtimeDTO) {
-        log.info("Creating showtimes with values: movieId={}, theaterId={}, startDate={}, endDate={}, timeSlot={}, price={}",
+        log.info("Creating showtime with values: movieId={}, theaterId={}, startDate={}, endDate={}, price={}",
                 showtimeDTO.getMovie(),
                 showtimeDTO.getTheater(),
                 showtimeDTO.getStartDate(),
                 showtimeDTO.getEndDate(),
-                showtimeDTO.getTimeSlotIds(),
                 showtimeDTO.getPrice());
+
+        List<Showtime> showTimes = showtimeRepository.findAll();
+
+        for (Showtime showtime : showTimes) {
+            // Log showtime details for debugging
+            log.info("Showtime: showtimeId={}, startDate={}, endDate={}, timeSlot={}, price={}",
+                    showtime.getShowtimeId(),
+                    showtime.getStartDate(),
+                    showtime.getEndDate(),
+                    showtime.getTimeslotIds(),
+                    showtime.getPrice());
+
+            // Check if the movie and theater match
+            if (showtimeDTO.getMovie().equals(showtime.getMovie().getMovieId()) &&
+                    showtimeDTO.getTheater().equals(showtime.getTheater().getTheaterId())) {
+
+                // Convert java.util.Date to compare using compareTo method
+                Date newStartDate = showtimeDTO.getStartDate();
+                Date newEndDate = showtimeDTO.getEndDate();
+                Date existingStartDate = showtime.getStartDate();
+                Date existingEndDate = showtime.getEndDate();
+
+                // Check if new showtime's start date is after the existing show's end date
+                boolean isStartAfterExistingEnd = newStartDate.compareTo(existingEndDate) > 0;
+
+                // Check if new showtime's end date is before the existing show's start date
+                boolean isEndBeforeExistingStart = newEndDate.compareTo(existingStartDate) < 0;
+
+                // If neither of these conditions is true, the dates overlap
+                boolean isDateOverlap = !(isStartAfterExistingEnd || isEndBeforeExistingStart);
+
+                if (isDateOverlap) {
+                    // Log the error and throw an exception if there is an overlap
+                    log.error("Duplicate showtime found: movieId={}, theaterId={}",
+                            showtimeDTO.getMovie(),
+                            showtimeDTO.getTheater());
+                    throw new DuplicateShowtimeException("Duplicate showtime found");
+                }
+            }
+        }
 
         final Showtime showtime = new Showtime();
         mapToEntity(showtimeDTO, showtime);
-        log.info("After Creating showtimes with values: movieId={}, theaterId={}, startDate={}, , endDate={}, timeSlot={}, price={}",
+        log.info("After Creating showtime with values: movieId={}, theaterId={}, startDate={}, endDate={}, price={}",
                 showtime.getMovie(),
                 showtime.getTheater(),
                 showtime.getStartDate(),
                 showtime.getEndDate(),
-                showtime.getTimeslotIds(),
                 showtime.getPrice());
 
         return showtimeRepository.save(showtime).getShowtimeId();
@@ -169,4 +211,5 @@ public class ShowtimeService {
         }
         return showtime.getTimeslotIds();
     }
+
 }

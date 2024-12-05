@@ -33,7 +33,6 @@ public class Booking {
     @Size(max = 255)
     private String bookingStatus;
 
-    @NotNull
     private List<String> seatSelected;
 
     @NotNull
